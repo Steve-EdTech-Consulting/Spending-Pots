@@ -1,0 +1,6 @@
+{
+  "name": "Pocket Pots",
+  "description": "Minimalist personal financial pots manager for mobile and desktop with real-time Supabase sync.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
