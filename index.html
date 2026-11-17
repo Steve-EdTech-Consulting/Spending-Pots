@@ -3284,10 +3284,13 @@ notify pgrst, 'reload schema';`;
               let barColorClass = 'bg-emerald-600 dark:bg-emerald-500';
 
               if (monthlyAllowance > 0) {
-                if (spentThisMonth >= monthlyAllowance) {
+                if (spentThisMonth > monthlyAllowance) {
                   isAllowanceSpent = true;
                   barWidthPct = 100;
                   barColorClass = 'bg-red-500 dark:bg-red-400';
+                } else if (spentThisMonth === monthlyAllowance) {
+                  barWidthPct = 100;
+                  barColorClass = 'bg-yellow-500 dark:bg-yellow-400';
                 } else {
                   const remainingPct = Math.max(
                     0,
