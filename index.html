@@ -665,7 +665,50 @@
 
             <!-- 12-Month Spending Trend -->
             <div class="bg-white dark:bg-[#131A26] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 sm:p-6">
-              <h2 class="text-base font-semibold text-slate-900 dark:text-slate-100 mb-4">12-Month Spending Trend</h2>
+              <div class="flex flex-wrap items-baseline justify-between gap-2 mb-4">
+                <h2 class="text-base font-semibold text-slate-900 dark:text-slate-100">12-Month Spending Trend</h2>
+                <span id="reports-annual-range" class="text-xs text-slate-500 dark:text-slate-400"></span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
+                <div class="rounded-xl bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 p-3.5 sm:p-4">
+                  <p id="reports-annual-budget-label" class="text-xs font-medium text-slate-500 dark:text-slate-400">
+                    Allocated Budget (YTD)
+                  </p>
+                  <p
+                    id="reports-annual-budget"
+                    class="mt-1 text-xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100"
+                  >
+                    £0.00
+                  </p>
+                  <p id="reports-annual-budget-meta" class="mt-0.5 text-xs text-slate-500 dark:text-slate-400 font-mono tabular-nums"></p>
+                </div>
+
+                <div class="rounded-xl bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 p-3.5 sm:p-4">
+                  <p id="reports-annual-spent-label" class="text-xs font-medium text-slate-500 dark:text-slate-400">
+                    Spent This Year
+                  </p>
+                  <p
+                    id="reports-annual-spent"
+                    class="mt-1 text-xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100"
+                  >
+                    £0.00
+                  </p>
+                  <p id="reports-annual-spent-meta" class="mt-0.5 text-xs text-slate-500 dark:text-slate-400 font-mono tabular-nums"></p>
+                </div>
+
+                <div class="rounded-xl bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 p-3.5 sm:p-4">
+                  <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Difference</p>
+                  <p
+                    id="reports-annual-diff"
+                    class="mt-1 text-xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100"
+                  >
+                    £0.00
+                  </p>
+                  <p id="reports-annual-diff-meta" class="mt-0.5 text-xs text-slate-500 dark:text-slate-400 font-mono tabular-nums"></p>
+                </div>
+              </div>
+
               <div id="reports-trend-list" class="space-y-3"></div>
             </div>
           </section>
@@ -1887,6 +1930,15 @@ notify pgrst, 'reload schema';`;
         const reportsNetMeta = document.getElementById('reports-net-meta');
         const reportsPotsEmpty = document.getElementById('reports-pots-empty');
         const reportsPotsList = document.getElementById('reports-pots-list');
+        const reportsAnnualRange = document.getElementById('reports-annual-range');
+        const reportsAnnualBudgetLabel = document.getElementById('reports-annual-budget-label');
+        const reportsAnnualBudget = document.getElementById('reports-annual-budget');
+        const reportsAnnualBudgetMeta = document.getElementById('reports-annual-budget-meta');
+        const reportsAnnualSpentLabel = document.getElementById('reports-annual-spent-label');
+        const reportsAnnualSpent = document.getElementById('reports-annual-spent');
+        const reportsAnnualSpentMeta = document.getElementById('reports-annual-spent-meta');
+        const reportsAnnualDiff = document.getElementById('reports-annual-diff');
+        const reportsAnnualDiffMeta = document.getElementById('reports-annual-diff-meta');
         const reportsTrendList = document.getElementById('reports-trend-list');
 
         // Settings Elements
@@ -4416,6 +4468,19 @@ notify pgrst, 'reload schema';`;
             cursor = getPrevMonthKey(cursor);
           }
 
+          const monthsWithTx = new Set();
+          transactions.forEach((tx) => {
+            const d = new Date(tx.created_at);
+            if (!Number.isNaN(d.getTime())) monthsWithTx.add(getMonthKey(d));
+          });
+
+          const monthsWithAppliedAlloc = new Set();
+          pots.forEach((p) => {
+            if (Number(p.monthly_amount) > 0 && p.last_applied_month) {
+              monthsWithAppliedAlloc.add(p.last_applied_month);
+            }
+          });
+
           const trendData = trendMonths.map((mk) => {
             const spent = roundMoney(
               transactions
@@ -4429,11 +4494,99 @@ notify pgrst, 'reload schema';`;
             return { mk, label: formatMonthLabel(mk), spent };
           });
 
+          // Current year summary excluding current month and future months
+          const now = new Date();
+          const nowYear = now.getFullYear();
+          const nowMonthShort = new Intl.DateTimeFormat('en-GB', { month: 'short' }).format(now);
+          const completedYearMonths = [];
+          for (let m = 1; m <= 12; m++) {
+            const mk = `${nowYear}-${String(m).padStart(2, '0')}`;
+            if (mk < currentMonth) completedYearMonths.push(mk);
+          }
+
+          const allocatedYearMonths = completedYearMonths.filter(
+            (mk) => totalMonthlyBudget > 0 && (monthsWithTx.has(mk) || monthsWithAppliedAlloc.has(mk))
+          );
+          const yearAllocatedBudget = roundMoney(totalMonthlyBudget * allocatedYearMonths.length);
+
+          const yearSpendsExclCurrent = transactions.filter((tx) => {
+            if (tx.type === 'add') return false;
+            const d = new Date(tx.created_at);
+            if (Number.isNaN(d.getTime())) return false;
+            const mk = getMonthKey(d);
+            return d.getFullYear() === nowYear && mk < currentMonth;
+          });
+          const yearSpent = roundMoney(
+            yearSpendsExclCurrent.reduce((s, t) => s + (Number(t.amount) || 0), 0)
+          );
+          const yearDiff = roundMoney(yearAllocatedBudget - yearSpent);
+
+          if (reportsAnnualRange) {
+            reportsAnnualRange.textContent = `${nowYear} YTD (excl. ${nowMonthShort})`;
+          }
+          if (reportsAnnualBudgetLabel) {
+            reportsAnnualBudgetLabel.textContent = `Allocated Budget (${nowYear})`;
+          }
+          if (reportsAnnualBudget) {
+            reportsAnnualBudget.textContent = formatCurrency(yearAllocatedBudget);
+          }
+          if (reportsAnnualBudgetMeta) {
+            if (completedYearMonths.length === 0) {
+              reportsAnnualBudgetMeta.textContent = `No completed months before ${nowMonthShort}`;
+            } else if (allocatedYearMonths.length > 0) {
+              reportsAnnualBudgetMeta.textContent = `Excl. ${nowMonthShort} · ${allocatedYearMonths.length} allocated ${allocatedYearMonths.length === 1 ? 'month' : 'months'}`;
+            } else {
+              reportsAnnualBudgetMeta.textContent = `Excl. ${nowMonthShort} · No allocated months`;
+            }
+          }
+          if (reportsAnnualSpentLabel) {
+            reportsAnnualSpentLabel.textContent = `Spent (${nowYear})`;
+          }
+          if (reportsAnnualSpent) {
+            reportsAnnualSpent.textContent = formatCurrency(yearSpent);
+          }
+          if (reportsAnnualSpentMeta) {
+            reportsAnnualSpentMeta.textContent =
+              completedYearMonths.length === 0
+                ? `No completed months before ${nowMonthShort}`
+                : `${yearSpendsExclCurrent.length} ${yearSpendsExclCurrent.length === 1 ? 'spend' : 'spends'} excl. ${nowMonthShort}`;
+          }
+          if (reportsAnnualDiff) {
+            if (yearDiff > 0) {
+              reportsAnnualDiff.textContent = `+${formatCurrency(yearDiff)}`;
+              reportsAnnualDiff.className =
+                'mt-1 text-xl font-bold font-mono tabular-nums text-emerald-700 dark:text-emerald-400';
+            } else if (yearDiff < 0) {
+              reportsAnnualDiff.textContent = formatCurrency(yearDiff);
+              reportsAnnualDiff.className =
+                'mt-1 text-xl font-bold font-mono tabular-nums text-red-600 dark:text-red-400';
+            } else {
+              reportsAnnualDiff.textContent = formatCurrency(0);
+              reportsAnnualDiff.className =
+                'mt-1 text-xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100';
+            }
+          }
+          if (reportsAnnualDiffMeta) {
+            if (yearAllocatedBudget <= 0 && yearSpent <= 0) {
+              reportsAnnualDiffMeta.textContent = 'No completed months yet';
+            } else if (yearDiff > 0) {
+              reportsAnnualDiffMeta.textContent = `${formatCurrency(yearDiff)} under budget`;
+            } else if (yearDiff < 0) {
+              reportsAnnualDiffMeta.textContent = `${formatCurrency(Math.abs(yearDiff))} over budget`;
+            } else {
+              reportsAnnualDiffMeta.textContent = 'Exactly on budget';
+            }
+          }
+
           const maxTrend = Math.max(...trendData.map((d) => d.spent), 1);
           reportsTrendList.innerHTML = trendData
             .map((d) => {
               const barPct = d.spent > 0 ? Math.max(4, Math.round((d.spent / maxTrend) * 100)) : 0;
               const isSelected = d.mk === reportsMonthKey;
+              const isOverBudget = d.spent > totalMonthlyBudget;
+              const barColorClass = isOverBudget
+                ? 'bg-red-500 dark:bg-red-400'
+                : 'bg-emerald-600 dark:bg-emerald-500';
               return `
                 <div class="flex items-center gap-3 text-xs">
                   <span class="w-20 shrink-0 font-medium ${
@@ -4443,11 +4596,7 @@ notify pgrst, 'reload schema';`;
                   }">${escapeHtml(d.label)}</span>
                   <div class="flex-1 h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                     <div
-                      class="h-full rounded-full transition-all duration-300 ${
-                        isSelected
-                          ? 'bg-emerald-600 dark:bg-emerald-500'
-                          : 'bg-slate-400 dark:bg-slate-600'
-                      }"
+                      class="h-full rounded-full transition-all duration-300 ${barColorClass}"
                       style="width: ${barPct}%"
                     ></div>
                   </div>
