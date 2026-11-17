@@ -589,12 +589,43 @@
               <div>
                 <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Reports</h1>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  Monthly spending breakdown and trends
+                  Monthly spending breakdown and yearly trends
                 </p>
               </div>
 
+              <!-- Reports Sub-Tabs -->
+              <div
+                class="grid grid-cols-2 gap-1 p-1 bg-slate-100 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-800 rounded-2xl w-full sm:w-auto sm:min-w-[240px]"
+                role="tablist"
+                aria-label="Reports view"
+              >
+                <button
+                  type="button"
+                  id="reports-tab-monthly"
+                  role="tab"
+                  aria-selected="true"
+                  aria-controls="reports-panel-monthly"
+                  class="min-h-[44px] px-4 py-2 text-sm font-semibold rounded-xl bg-white text-slate-900 dark:bg-[#131A26] dark:text-slate-100 shadow-sm transition-colors whitespace-nowrap"
+                >
+                  Monthly
+                </button>
+                <button
+                  type="button"
+                  id="reports-tab-yearly"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="reports-panel-yearly"
+                  class="min-h-[44px] px-4 py-2 text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors whitespace-nowrap"
+                >
+                  Yearly
+                </button>
+              </div>
+            </div>
+
+            <!-- Reports Sub-Panel: Monthly -->
+            <div id="reports-panel-monthly" role="tabpanel" aria-labelledby="reports-tab-monthly" class="space-y-5">
               <!-- Report Month Navigator -->
-              <div class="flex items-center justify-between gap-2 bg-white dark:bg-[#131A26] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-1 sm:min-w-[260px]">
+              <div class="flex items-center justify-between gap-2 bg-white dark:bg-[#131A26] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-1 sm:w-72">
                 <button
                   type="button"
                   id="reports-prev-month-btn"
@@ -616,100 +647,103 @@
                   <i data-lucide="chevron-right" class="w-5 h-5"></i>
                 </button>
               </div>
-            </div>
 
-            <!-- Summary Metrics -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-              <div class="bg-white dark:bg-[#131A26] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5">
-                <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Spent This Month</p>
-                <p
-                  id="reports-spent-total"
-                  class="mt-1.5 text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100"
-                >
-                  £0.00
-                </p>
-                <p id="reports-spent-meta" class="mt-1 text-xs text-slate-500 dark:text-slate-400 tabular-nums"></p>
-              </div>
-
-              <div class="bg-white dark:bg-[#131A26] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5">
-                <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Monthly Auto-Add</p>
-                <p
-                  id="reports-monthly-budget"
-                  class="mt-1.5 text-2xl font-bold font-mono tabular-nums text-emerald-700 dark:text-emerald-400"
-                >
-                  £0.00
-                </p>
-                <p id="reports-budget-meta" class="mt-1 text-xs text-slate-500 dark:text-slate-400 tabular-nums"></p>
-              </div>
-
-              <div class="bg-white dark:bg-[#131A26] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5">
-                <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Current Net Balance</p>
-                <p
-                  id="reports-net-balance"
-                  class="mt-1.5 text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100"
-                >
-                  £0.00
-                </p>
-                <p id="reports-net-meta" class="mt-1 text-xs text-slate-500 dark:text-slate-400 tabular-nums"></p>
-              </div>
-            </div>
-
-            <!-- Spending by Pot -->
-            <div class="bg-white dark:bg-[#131A26] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 sm:p-6">
-              <h2 class="text-base font-semibold text-slate-900 dark:text-slate-100 mb-4">Spending by Pot</h2>
-              <div id="reports-pots-empty" class="hidden py-6 text-center text-sm text-slate-500 dark:text-slate-400">
-                No spending recorded for this month.
-              </div>
-              <div id="reports-pots-list" class="space-y-4"></div>
-            </div>
-
-            <!-- 12-Month Spending Trend -->
-            <div class="bg-white dark:bg-[#131A26] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 sm:p-6">
-              <div class="flex flex-wrap items-baseline justify-between gap-2 mb-4">
-                <h2 class="text-base font-semibold text-slate-900 dark:text-slate-100">12-Month Spending Trend</h2>
-                <span id="reports-annual-range" class="text-xs text-slate-500 dark:text-slate-400"></span>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
-                <div class="rounded-xl bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 p-3.5 sm:p-4">
-                  <p id="reports-annual-budget-label" class="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    Allocated Budget (YTD)
-                  </p>
+              <!-- Summary Metrics -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                <div class="bg-white dark:bg-[#131A26] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5">
+                  <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Spent This Month</p>
                   <p
-                    id="reports-annual-budget"
-                    class="mt-1 text-xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100"
+                    id="reports-spent-total"
+                    class="mt-1.5 text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100"
                   >
                     £0.00
                   </p>
-                  <p id="reports-annual-budget-meta" class="mt-0.5 text-xs text-slate-500 dark:text-slate-400 font-mono tabular-nums"></p>
+                  <p id="reports-spent-meta" class="mt-1 text-xs text-slate-500 dark:text-slate-400 tabular-nums"></p>
                 </div>
 
-                <div class="rounded-xl bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 p-3.5 sm:p-4">
-                  <p id="reports-annual-spent-label" class="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    Spent This Year
-                  </p>
+                <div class="bg-white dark:bg-[#131A26] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5">
+                  <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Monthly Auto-Add</p>
                   <p
-                    id="reports-annual-spent"
-                    class="mt-1 text-xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100"
+                    id="reports-monthly-budget"
+                    class="mt-1.5 text-2xl font-bold font-mono tabular-nums text-emerald-700 dark:text-emerald-400"
                   >
                     £0.00
                   </p>
-                  <p id="reports-annual-spent-meta" class="mt-0.5 text-xs text-slate-500 dark:text-slate-400 font-mono tabular-nums"></p>
+                  <p id="reports-budget-meta" class="mt-1 text-xs text-slate-500 dark:text-slate-400 tabular-nums"></p>
                 </div>
 
-                <div class="rounded-xl bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 p-3.5 sm:p-4">
-                  <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Difference</p>
+                <div class="bg-white dark:bg-[#131A26] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5">
+                  <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Current Net Balance</p>
                   <p
-                    id="reports-annual-diff"
-                    class="mt-1 text-xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100"
+                    id="reports-net-balance"
+                    class="mt-1.5 text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100"
                   >
                     £0.00
                   </p>
-                  <p id="reports-annual-diff-meta" class="mt-0.5 text-xs text-slate-500 dark:text-slate-400 font-mono tabular-nums"></p>
+                  <p id="reports-net-meta" class="mt-1 text-xs text-slate-500 dark:text-slate-400 tabular-nums"></p>
                 </div>
               </div>
 
-              <div id="reports-trend-list" class="space-y-3"></div>
+              <!-- Spending by Pot -->
+              <div class="bg-white dark:bg-[#131A26] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 sm:p-6">
+                <h2 class="text-base font-semibold text-slate-900 dark:text-slate-100 mb-4">Spending by Pot</h2>
+                <div id="reports-pots-empty" class="hidden py-6 text-center text-sm text-slate-500 dark:text-slate-400">
+                  No spending recorded for this month.
+                </div>
+                <div id="reports-pots-list" class="space-y-4"></div>
+              </div>
+            </div>
+
+            <!-- Reports Sub-Panel: Yearly -->
+            <div id="reports-panel-yearly" role="tabpanel" aria-labelledby="reports-tab-yearly" class="hidden space-y-5">
+              <!-- 12-Month Spending Trend -->
+              <div class="bg-white dark:bg-[#131A26] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 sm:p-6">
+                <div class="flex flex-wrap items-baseline justify-between gap-2 mb-4">
+                  <h2 class="text-base font-semibold text-slate-900 dark:text-slate-100">12-Month Spending Trend</h2>
+                  <span id="reports-annual-range" class="text-xs text-slate-500 dark:text-slate-400"></span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
+                  <div class="rounded-xl bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 p-3.5 sm:p-4">
+                    <p id="reports-annual-budget-label" class="text-xs font-medium text-slate-500 dark:text-slate-400">
+                      Allocated Budget (YTD)
+                    </p>
+                    <p
+                      id="reports-annual-budget"
+                      class="mt-1 text-xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100"
+                    >
+                      £0.00
+                    </p>
+                    <p id="reports-annual-budget-meta" class="mt-0.5 text-xs text-slate-500 dark:text-slate-400 font-mono tabular-nums"></p>
+                  </div>
+
+                  <div class="rounded-xl bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 p-3.5 sm:p-4">
+                    <p id="reports-annual-spent-label" class="text-xs font-medium text-slate-500 dark:text-slate-400">
+                      Spent This Year
+                    </p>
+                    <p
+                      id="reports-annual-spent"
+                      class="mt-1 text-xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100"
+                    >
+                      £0.00
+                    </p>
+                    <p id="reports-annual-spent-meta" class="mt-0.5 text-xs text-slate-500 dark:text-slate-400 font-mono tabular-nums"></p>
+                  </div>
+
+                  <div class="rounded-xl bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 p-3.5 sm:p-4">
+                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Difference</p>
+                    <p
+                      id="reports-annual-diff"
+                      class="mt-1 text-xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100"
+                    >
+                      £0.00
+                    </p>
+                    <p id="reports-annual-diff-meta" class="mt-0.5 text-xs text-slate-500 dark:text-slate-400 font-mono tabular-nums"></p>
+                  </div>
+                </div>
+
+                <div id="reports-trend-list" class="space-y-3"></div>
+              </div>
             </div>
           </section>
 
@@ -1755,6 +1789,7 @@
         let historyPotId = null;
         let historyMonthKey = null;
         let activeTab = 'pots'; // 'pots' | 'history' | 'reports' | 'settings'
+        let reportsSubTab = 'monthly'; // 'monthly' | 'yearly'
         let potsHeaderMonthKey = null;
         let reportsMonthKey = null;
         let pendingImportData = null;
@@ -1919,6 +1954,10 @@ notify pgrst, 'reload schema';`;
         const bottomTabBtns = document.querySelectorAll('.bottom-tab-btn');
 
         // Reports Elements
+        const reportsTabMonthly = document.getElementById('reports-tab-monthly');
+        const reportsTabYearly = document.getElementById('reports-tab-yearly');
+        const reportsPanelMonthly = document.getElementById('reports-panel-monthly');
+        const reportsPanelYearly = document.getElementById('reports-panel-yearly');
         const reportsPrevMonthBtn = document.getElementById('reports-prev-month-btn');
         const reportsNextMonthBtn = document.getElementById('reports-next-month-btn');
         const reportsMonthLabel = document.getElementById('reports-month-label');
@@ -4463,9 +4502,9 @@ notify pgrst, 'reload schema';`;
               .join('');
           }
 
-          // 12-Month Spending Trend starting from most recent month (reportsMonthKey) at top
+          // 12-Month Spending Trend starting from most recent month at top
           const trendMonths = [];
-          let cursor = reportsMonthKey;
+          let cursor = maxMonth;
           for (let i = 0; i < 12 && cursor; i++) {
             trendMonths.push(cursor);
             cursor = getPrevMonthKey(cursor);
@@ -4585,7 +4624,7 @@ notify pgrst, 'reload schema';`;
           reportsTrendList.innerHTML = trendData
             .map((d) => {
               const barPct = d.spent > 0 ? Math.max(4, Math.round((d.spent / maxTrend) * 100)) : 0;
-              const isSelected = d.mk === reportsMonthKey;
+              const isCurrent = d.mk === currentMonth;
               const isOverBudget = d.spent > totalMonthlyBudget;
               const barColorClass = isOverBudget
                 ? 'bg-red-500 dark:bg-red-400'
@@ -4593,7 +4632,7 @@ notify pgrst, 'reload schema';`;
               return `
                 <div class="flex items-center gap-3 text-xs">
                   <span class="w-20 shrink-0 font-medium ${
-                    isSelected
+                    isCurrent
                       ? 'text-slate-900 dark:text-slate-100 font-semibold'
                       : 'text-slate-500 dark:text-slate-400'
                   }">${escapeHtml(d.label)}</span>
@@ -4604,7 +4643,7 @@ notify pgrst, 'reload schema';`;
                     ></div>
                   </div>
                   <span class="w-20 text-right font-mono tabular-nums shrink-0 ${
-                    isSelected
+                    isCurrent
                       ? 'text-slate-900 dark:text-slate-100 font-semibold'
                       : 'text-slate-600 dark:text-slate-300'
                   }">${formatCurrency(d.spent)}</span>
@@ -4612,6 +4651,35 @@ notify pgrst, 'reload schema';`;
               `;
             })
             .join('');
+        }
+
+        function setReportsSubTab(subTab) {
+          reportsSubTab = subTab === 'yearly' ? 'yearly' : 'monthly';
+          const isMonthly = reportsSubTab === 'monthly';
+
+          if (reportsPanelMonthly) reportsPanelMonthly.classList.toggle('hidden', !isMonthly);
+          if (reportsPanelYearly) reportsPanelYearly.classList.toggle('hidden', isMonthly);
+
+          const activeCls =
+            'min-h-[44px] px-4 py-2 text-sm font-semibold rounded-xl bg-white text-slate-900 dark:bg-[#131A26] dark:text-slate-100 shadow-sm transition-colors whitespace-nowrap';
+          const inactiveCls =
+            'min-h-[44px] px-4 py-2 text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors whitespace-nowrap';
+
+          if (reportsTabMonthly) {
+            reportsTabMonthly.setAttribute('aria-selected', isMonthly ? 'true' : 'false');
+            reportsTabMonthly.className = isMonthly ? activeCls : inactiveCls;
+          }
+          if (reportsTabYearly) {
+            reportsTabYearly.setAttribute('aria-selected', isMonthly ? 'false' : 'true');
+            reportsTabYearly.className = isMonthly ? inactiveCls : activeCls;
+          }
+        }
+
+        if (reportsTabMonthly) {
+          reportsTabMonthly.addEventListener('click', () => setReportsSubTab('monthly'));
+        }
+        if (reportsTabYearly) {
+          reportsTabYearly.addEventListener('click', () => setReportsSubTab('yearly'));
         }
 
         reportsPrevMonthBtn.addEventListener('click', () => {
@@ -6276,6 +6344,7 @@ notify pgrst, 'reload schema';`;
             activeSyncPromise = null;
             potsHeaderMonthKey = null;
             reportsMonthKey = null;
+            setReportsSubTab('monthly');
             activeTab = 'pots';
             if (syncConfirmationText) syncConfirmationText.classList.add('hidden');
             supabaseSetupBanner.classList.add('hidden');
