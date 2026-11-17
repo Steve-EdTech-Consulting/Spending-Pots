@@ -4408,11 +4408,11 @@ notify pgrst, 'reload schema';`;
               .join('');
           }
 
-          // 12-Month Spending Trend ending at reportsMonthKey
+          // 12-Month Spending Trend starting from most recent month (reportsMonthKey) at top
           const trendMonths = [];
           let cursor = reportsMonthKey;
           for (let i = 0; i < 12 && cursor; i++) {
-            trendMonths.unshift(cursor);
+            trendMonths.push(cursor);
             cursor = getPrevMonthKey(cursor);
           }
 
