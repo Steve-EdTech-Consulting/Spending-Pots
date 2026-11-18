@@ -373,7 +373,7 @@
                 class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5"
               >
                 <div class="min-w-0">
-                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Balance</p>
+                  <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Remaining balance this month</p>
                   <h1
                     id="total-balance-amount"
                     class="mt-1.5 text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-100 font-mono tabular-nums"
@@ -558,7 +558,7 @@
               id="transactions-empty"
               class="bg-white dark:bg-[#131A26] border border-slate-200/90 dark:border-slate-800 rounded-2xl px-5 py-10 text-center text-sm text-slate-500 dark:text-slate-400"
             >
-              No transactions recorded yet. Use <span class="font-medium text-slate-700 dark:text-slate-200">+ Add</span> on any pot to log activity.
+              No transactions recorded yet. Use <span class="font-medium text-slate-700 dark:text-slate-200">- Spend</span> on any pot to log activity.
             </div>
 
             <div
@@ -589,13 +589,13 @@
               <div>
                 <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Reports</h1>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  Monthly spending breakdown and yearly trends
+                  Monthly breakdown, yearly trends, and transaction search
                 </p>
               </div>
 
               <!-- Reports Sub-Tabs -->
               <div
-                class="grid grid-cols-2 gap-1 p-1 bg-slate-100 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-800 rounded-2xl w-full sm:w-auto sm:min-w-[240px]"
+                class="grid grid-cols-3 gap-1 p-1 bg-slate-100 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-800 rounded-2xl w-full sm:w-auto sm:min-w-[300px]"
                 role="tablist"
                 aria-label="Reports view"
               >
@@ -605,7 +605,7 @@
                   role="tab"
                   aria-selected="true"
                   aria-controls="reports-panel-monthly"
-                  class="min-h-[44px] px-4 py-2 text-sm font-semibold rounded-xl bg-white text-slate-900 dark:bg-[#131A26] dark:text-slate-100 shadow-sm transition-colors whitespace-nowrap"
+                  class="min-h-[44px] px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl bg-white text-slate-900 dark:bg-[#131A26] dark:text-slate-100 shadow-sm transition-colors whitespace-nowrap"
                 >
                   Monthly
                 </button>
@@ -615,9 +615,19 @@
                   role="tab"
                   aria-selected="false"
                   aria-controls="reports-panel-yearly"
-                  class="min-h-[44px] px-4 py-2 text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors whitespace-nowrap"
+                  class="min-h-[44px] px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors whitespace-nowrap"
                 >
                   Yearly
+                </button>
+                <button
+                  type="button"
+                  id="reports-tab-search"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="reports-panel-search"
+                  class="min-h-[44px] px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors whitespace-nowrap"
+                >
+                  Search
                 </button>
               </div>
             </div>
@@ -743,6 +753,111 @@
                 </div>
 
                 <div id="reports-trend-list" class="space-y-3"></div>
+              </div>
+            </div>
+
+            <!-- Reports Sub-Panel: Search -->
+            <div id="reports-panel-search" role="tabpanel" aria-labelledby="reports-tab-search" class="hidden space-y-5">
+              <!-- Search Criteria Card -->
+              <div class="bg-white dark:bg-[#131A26] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 sm:p-6 space-y-4">
+                <div class="flex items-center justify-between gap-3">
+                  <h2 class="text-base font-semibold text-slate-900 dark:text-slate-100">Transaction Search</h2>
+                  <button
+                    type="button"
+                    id="reports-search-clear-btn"
+                    class="hidden text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    Clear filters
+                  </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                  <div class="sm:col-span-6">
+                    <label
+                      for="reports-search-text"
+                      class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5"
+                    >
+                      Description contains
+                    </label>
+                    <div class="relative">
+                      <i
+                        data-lucide="search"
+                        class="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                      ></i>
+                      <input
+                        id="reports-search-text"
+                        type="search"
+                        placeholder="e.g. coffee, tesco, rent..."
+                        class="w-full min-h-[44px] pl-10 pr-3.5 py-2 text-sm bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-900/15 dark:focus:ring-slate-100/15 focus:border-slate-900 dark:focus:border-slate-300 transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="sm:col-span-3">
+                    <label
+                      for="reports-search-amount-op"
+                      class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5"
+                    >
+                      Amount filter
+                    </label>
+                    <select
+                      id="reports-search-amount-op"
+                      aria-label="Amount filter condition"
+                      class="w-full min-h-[44px] px-3 py-2 text-sm font-medium bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-900/15 dark:focus:ring-slate-100/15 focus:border-slate-900 dark:focus:border-slate-300 transition-colors"
+                    >
+                      <option value="any">Any amount</option>
+                      <option value="above">Above (&gt;)</option>
+                      <option value="below">Below (&lt;)</option>
+                    </select>
+                  </div>
+
+                  <div class="sm:col-span-3">
+                    <label
+                      for="reports-search-amount-val"
+                      class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5"
+                    >
+                      Amount (£)
+                    </label>
+                    <div class="relative">
+                      <span
+                        class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-mono text-slate-400 dark:text-slate-500 pointer-events-none"
+                      >
+                        £
+                      </span>
+                      <input
+                        id="reports-search-amount-val"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        inputmode="decimal"
+                        placeholder="0.00"
+                        class="w-full min-h-[44px] pl-7 pr-3 py-2 text-sm font-mono tabular-nums bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-900/15 dark:focus:ring-slate-100/15 focus:border-slate-900 dark:focus:border-slate-300 transition-colors"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Search Results Card -->
+              <div class="bg-white dark:bg-[#131A26] border border-slate-200/90 dark:border-slate-800 rounded-2xl overflow-hidden">
+                <div class="px-4 sm:px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2">
+                  <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">Results</h3>
+                  <span
+                    id="reports-search-summary"
+                    class="text-xs font-mono tabular-nums text-slate-500 dark:text-slate-400"
+                  ></span>
+                </div>
+
+                <div id="reports-search-empty" class="px-5 py-10 text-center">
+                  <p id="reports-search-empty-title" class="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                    Search your transactions
+                  </p>
+                  <p id="reports-search-empty-desc" class="mt-1 text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+                    Enter a partial description or choose an amount above or below a value to search across all recorded transactions.
+                  </p>
+                </div>
+
+                <ul id="reports-search-list" class="hidden divide-y divide-slate-100 dark:divide-slate-800/80"></ul>
               </div>
             </div>
           </section>
@@ -1017,7 +1132,7 @@
             ></span>
             <div class="min-w-0">
               <h3 id="tx-modal-title" class="text-base font-semibold text-slate-900 dark:text-slate-100 truncate">
-                Add to Pot
+                Spend from Pot
               </h3>
               <p id="tx-pot-current" class="text-xs text-slate-500 dark:text-slate-400 font-mono tabular-nums"></p>
             </div>
@@ -1029,24 +1144,6 @@
             class="w-11 h-11 -mr-2 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <i data-lucide="x" class="w-5 h-5"></i>
-          </button>
-        </div>
-
-        <!-- Mode Toggle (Spend vs Add) -->
-        <div class="grid grid-cols-2 gap-1 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl mb-5">
-          <button
-            type="button"
-            id="tx-mode-spend"
-            class="min-h-[44px] px-3 py-2 text-sm font-semibold rounded-lg bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100 shadow-sm transition-colors"
-          >
-            - Spend
-          </button>
-          <button
-            type="button"
-            id="tx-mode-add"
-            class="min-h-[44px] px-3 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors"
-          >
-            + Add Funds
           </button>
         </div>
 
@@ -1064,14 +1161,15 @@
               <input
                 id="tx-amount"
                 type="number"
-                inputmode="decimal"
                 step="0.01"
-                min="0.01"
                 required
                 placeholder="0.00"
                 class="w-full min-h-[60px] pl-10 pr-4 py-3 text-3xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-700/80 rounded-2xl placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:outline-none focus:bg-white dark:focus:bg-slate-950 focus:ring-2 focus:ring-slate-900/15 dark:focus:ring-slate-100/15 focus:border-slate-900 dark:focus:border-slate-300 transition-colors"
               />
             </div>
+            <p class="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+              Enter a negative amount (e.g. -20.00) to add to pot.
+            </p>
           </div>
 
           <!-- Quick Amount Buttons -->
@@ -1150,7 +1248,7 @@
               id="tx-submit-btn"
               class="flex-1 min-h-[48px] px-5 py-3 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white active:scale-[0.98] text-white dark:text-slate-900 text-sm font-semibold rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none"
             >
-              <span id="tx-submit-label">Confirm Spend</span>
+              <span id="tx-submit-label">Confirm spend</span>
             </button>
           </div>
         </form>
@@ -1452,10 +1550,10 @@
         <div class="px-6 pt-3 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:pb-5 border-t border-slate-100 dark:border-slate-800 shrink-0 flex items-center gap-3">
           <button
             type="button"
-            id="history-add-btn"
+            id="history-spend-btn"
             class="flex-1 min-h-[48px] px-5 py-3 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white active:scale-[0.98] text-white dark:text-slate-900 text-sm font-semibold rounded-xl transition-all flex items-center justify-center gap-2"
           >
-            <span>+ Add to Pot</span>
+            <span>- Spend</span>
           </button>
         </div>
       </div>
@@ -1488,24 +1586,6 @@
           </button>
         </div>
 
-        <!-- Mode Toggle (Spend vs Add) -->
-        <div class="grid grid-cols-2 gap-1 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl mb-4">
-          <button
-            type="button"
-            id="edit-tx-mode-spend"
-            class="min-h-[44px] px-3 py-2 text-sm font-semibold rounded-lg bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100 shadow-sm transition-colors"
-          >
-            - Spend
-          </button>
-          <button
-            type="button"
-            id="edit-tx-mode-add"
-            class="min-h-[44px] px-3 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors"
-          >
-            + Add Funds
-          </button>
-        </div>
-
         <form id="edit-tx-form" class="space-y-4" novalidate>
           <div>
             <label for="edit-tx-pot" class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">
@@ -1529,14 +1609,15 @@
                 <input
                   id="edit-tx-amount"
                   type="number"
-                  inputmode="decimal"
                   step="0.01"
-                  min="0.01"
                   required
                   placeholder="0.00"
                   class="w-full min-h-[48px] pl-9 pr-4 py-2.5 text-base font-semibold font-mono tabular-nums text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-700/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900/15 dark:focus:ring-slate-100/15 focus:border-slate-900 dark:focus:border-slate-300"
                 />
               </div>
+              <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                Negative adds to pot
+              </p>
             </div>
 
             <div>
@@ -1777,12 +1858,12 @@
         let activeSyncPromise = null;
         let lastSyncedAt = null;
         let realtimeChannel = null;
+        let realtimeTxSyncTimer = null;
+        let lastLocalTxWriteAt = 0;
         let activeTxPotId = null;
-        let activeTxMode = 'spend'; // 'spend' | 'add'
         let editingPotId = null;
         let deleteConfirmArmed = false;
         let editingTxId = null;
-        let editTxMode = 'spend';
         let editTxDeleteConfirmArmed = false;
         let editingAutoDeductId = null;
         let autoDeductDeleteConfirmArmed = false;
@@ -1956,8 +2037,19 @@ notify pgrst, 'reload schema';`;
         // Reports Elements
         const reportsTabMonthly = document.getElementById('reports-tab-monthly');
         const reportsTabYearly = document.getElementById('reports-tab-yearly');
+        const reportsTabSearch = document.getElementById('reports-tab-search');
         const reportsPanelMonthly = document.getElementById('reports-panel-monthly');
         const reportsPanelYearly = document.getElementById('reports-panel-yearly');
+        const reportsPanelSearch = document.getElementById('reports-panel-search');
+        const reportsSearchText = document.getElementById('reports-search-text');
+        const reportsSearchAmountOp = document.getElementById('reports-search-amount-op');
+        const reportsSearchAmountVal = document.getElementById('reports-search-amount-val');
+        const reportsSearchClearBtn = document.getElementById('reports-search-clear-btn');
+        const reportsSearchSummary = document.getElementById('reports-search-summary');
+        const reportsSearchEmpty = document.getElementById('reports-search-empty');
+        const reportsSearchEmptyTitle = document.getElementById('reports-search-empty-title');
+        const reportsSearchEmptyDesc = document.getElementById('reports-search-empty-desc');
+        const reportsSearchList = document.getElementById('reports-search-list');
         const reportsPrevMonthBtn = document.getElementById('reports-prev-month-btn');
         const reportsNextMonthBtn = document.getElementById('reports-next-month-btn');
         const reportsMonthLabel = document.getElementById('reports-month-label');
@@ -2000,8 +2092,6 @@ notify pgrst, 'reload schema';`;
         const txPotCurrent = document.getElementById('tx-pot-current');
         const txCloseBtn = document.getElementById('tx-close-btn');
         const txCancelBtn = document.getElementById('tx-cancel-btn');
-        const txModeSpendBtn = document.getElementById('tx-mode-spend');
-        const txModeAddBtn = document.getElementById('tx-mode-add');
         const txForm = document.getElementById('tx-form');
         const txAmountInput = document.getElementById('tx-amount');
         const txNoteInput = document.getElementById('tx-note');
@@ -2053,13 +2143,11 @@ notify pgrst, 'reload schema';`;
         const historyTxEmptyText = document.getElementById('history-tx-empty-text');
         const historyJumpLatestBtn = document.getElementById('history-jump-latest-btn');
         const historyTxList = document.getElementById('history-tx-list');
-        const historyAddBtn = document.getElementById('history-add-btn');
+        const historySpendBtn = document.getElementById('history-spend-btn');
 
         // Edit / Delete Transaction Modal Elements
         const editTxModal = document.getElementById('edit-tx-modal');
         const editTxCloseBtn = document.getElementById('edit-tx-close-btn');
-        const editTxModeSpendBtn = document.getElementById('edit-tx-mode-spend');
-        const editTxModeAddBtn = document.getElementById('edit-tx-mode-add');
         const editTxForm = document.getElementById('edit-tx-form');
         const editTxPotSelect = document.getElementById('edit-tx-pot');
         const editTxAmountInput = document.getElementById('edit-tx-amount');
@@ -2533,10 +2621,66 @@ notify pgrst, 'reload schema';`;
           }).format(d);
         }
 
+        function scheduleRealtimeTxSync() {
+          if (!currentUser || !hasSupabaseTxTable || storageMode === 'local') return;
+          if (realtimeTxSyncTimer) clearTimeout(realtimeTxSyncTimer);
+          realtimeTxSyncTimer = setTimeout(() => {
+            realtimeTxSyncTimer = null;
+            fetchTransactions();
+          }, 400);
+        }
+
+        function upsertTransactionInState(rawRow, replaceId = null) {
+          const matchedPot =
+            (rawRow.pot_id !== null &&
+              rawRow.pot_id !== undefined &&
+              pots.find((p) => String(p.id) === String(rawRow.pot_id))) ||
+            pots.find((p) => p.name.toLowerCase() === String(rawRow.pot_name || '').toLowerCase());
+          const next = normalizeTransaction({
+            ...rawRow,
+            pot_name: rawRow.pot_name || (matchedPot ? matchedPot.name : 'Pot'),
+            pot_emoji: rawRow.pot_emoji || (matchedPot ? matchedPot.emoji : '💰'),
+          });
+
+          const nextTs = Date.parse(next.created_at) || 0;
+          transactions = sortTransactions([
+            next,
+            ...transactions.filter((t) => {
+              const tId = String(t.id);
+              if (tId === String(next.id)) return false;
+              if (replaceId && tId === String(replaceId)) return false;
+              if (
+                !isUuid(t.id) &&
+                String(t.pot_id || '') === String(next.pot_id || '') &&
+                t.type === next.type &&
+                Number(t.amount) === Number(next.amount) &&
+                Math.abs((Date.parse(t.created_at) || 0) - nextTs) < 5000
+              ) {
+                return false;
+              }
+              return true;
+            }),
+          ]);
+          saveLocalTransactions(transactions);
+          renderTransactions();
+          renderDashboard();
+          return next;
+        }
+
         async function fetchTransactions() {
           if (!currentUser) return;
-          transactions = sortTransactions(loadLocalTransactions());
-          renderTransactions();
+          const localCached = loadLocalTransactions();
+          if (transactions.length === 0 && localCached.length > 0) {
+            transactions = sortTransactions(localCached);
+            renderTransactions();
+          } else {
+            const byLocalId = new Map(localCached.map((t) => [String(t.id), t]));
+            transactions.forEach((t) => {
+              if (!byLocalId.has(String(t.id))) byLocalId.set(String(t.id), t);
+            });
+            transactions = sortTransactions(Array.from(byLocalId.values()));
+            renderTransactions();
+          }
 
           if (!hasSupabaseTxTable) return;
           try {
@@ -2581,6 +2725,7 @@ notify pgrst, 'reload schema';`;
               transactions = sortTransactions(Array.from(byId.values()));
               saveLocalTransactions(transactions);
               renderTransactions();
+              renderDashboard();
             }
           } catch (_err) {
             // Keep localStorage cache silently
@@ -2588,8 +2733,12 @@ notify pgrst, 'reload schema';`;
         }
 
         async function recordTransaction(tx) {
+          lastLocalTxWriteAt = Date.now();
           const normalized = normalizeTransaction(tx);
-          transactions = sortTransactions([normalized, ...transactions]);
+          transactions = sortTransactions([
+            normalized,
+            ...transactions.filter((t) => String(t.id) !== String(normalized.id)),
+          ]);
           saveLocalTransactions(transactions);
           renderTransactions();
           renderDashboard();
@@ -2597,7 +2746,8 @@ notify pgrst, 'reload schema';`;
           if (!hasSupabaseTxTable || !currentUser) return;
           try {
             const corePayload = {
-              pot_id: normalized.pot_id,
+              ...(isUuid(normalized.id) ? { id: normalized.id } : {}),
+              pot_id: isUuid(normalized.pot_id) ? normalized.pot_id : null,
               pot_name: normalized.pot_name,
               pot_emoji: normalized.pot_emoji,
               type: normalized.type,
@@ -2637,16 +2787,13 @@ notify pgrst, 'reload schema';`;
             if (res.error && isMissingTableError(res.error)) {
               hasSupabaseTxTable = false;
             } else if (res.data && res.data.id) {
-              const idx = transactions.findIndex((t) => String(t.id) === String(normalized.id));
-              if (idx !== -1) {
-                transactions[idx] = normalizeTransaction({
+              upsertTransactionInState(
+                {
                   ...res.data,
                   is_auto: normalized.is_auto || Boolean(res.data.is_auto),
-                });
-                transactions = sortTransactions(transactions);
-                saveLocalTransactions(transactions);
-                renderTransactions();
-              }
+                },
+                normalized.id
+              );
             }
           } catch (_err) {
             // Already stored safely in localStorage
@@ -2971,6 +3118,8 @@ notify pgrst, 'reload schema';`;
 
               const wasLocal = storageMode === 'local';
               storageMode = 'supabase';
+              hasSupabaseTxTable = true;
+              hasSupabaseAutoDeductTable = true;
               supabaseSetupBanner.classList.add('hidden');
 
               const filtered = (data || []).filter(
@@ -3041,6 +3190,7 @@ notify pgrst, 'reload schema';`;
             } finally {
               isLoadingPots = false;
               updateSyncIndicatorUi(false);
+              renderTransactions();
               renderDashboard();
 
               if (syncSucceeded && confirmSync) {
@@ -3101,9 +3251,59 @@ notify pgrst, 'reload schema';`;
                     pots = sortPots([...pots, next]);
                   }
                   renderDashboard();
+                  if (Date.now() - lastLocalTxWriteAt > 1200) {
+                    scheduleRealtimeTxSync();
+                  }
                 } else if (eventType === 'DELETE' && payload.old) {
                   pots = pots.filter((p) => String(p.id) !== String(payload.old.id));
                   renderDashboard();
+                }
+              }
+            )
+            .on(
+              'postgres_changes',
+              { event: '*', schema: 'public', table: 'transactions' },
+              (payload) => {
+                const eventType = payload.eventType;
+                if ((eventType === 'INSERT' || eventType === 'UPDATE') && payload.new) {
+                  if (payload.new.user_id && payload.new.user_id !== currentUser.id) return;
+                  if (realtimeTxSyncTimer) {
+                    clearTimeout(realtimeTxSyncTimer);
+                    realtimeTxSyncTimer = null;
+                  }
+                  upsertTransactionInState(payload.new);
+                } else if (eventType === 'DELETE' && payload.old) {
+                  const deletedId = String(payload.old.id);
+                  const nextTxs = transactions.filter((t) => String(t.id) !== deletedId);
+                  if (nextTxs.length !== transactions.length) {
+                    transactions = nextTxs;
+                    saveLocalTransactions(transactions);
+                    renderTransactions();
+                    renderDashboard();
+                  }
+                }
+              }
+            )
+            .on(
+              'postgres_changes',
+              { event: '*', schema: 'public', table: 'auto_deductions' },
+              (payload) => {
+                const eventType = payload.eventType;
+                if ((eventType === 'INSERT' || eventType === 'UPDATE') && payload.new) {
+                  if (payload.new.user_id && payload.new.user_id !== currentUser.id) return;
+                  const nextRule = normalizeAutoDeduction(payload.new);
+                  autoDeductions = sortAutoDeductions([
+                    nextRule,
+                    ...autoDeductions.filter((r) => String(r.id) !== String(nextRule.id)),
+                  ]);
+                  saveLocalAutoDeductions(autoDeductions);
+                  renderAutoDeductions();
+                } else if (eventType === 'DELETE' && payload.old) {
+                  autoDeductions = autoDeductions.filter(
+                    (r) => String(r.id) !== String(payload.old.id)
+                  );
+                  saveLocalAutoDeductions(autoDeductions);
+                  renderAutoDeductions();
                 }
               }
             )
@@ -3111,6 +3311,10 @@ notify pgrst, 'reload schema';`;
         }
 
         function unsubscribeRealtime() {
+          if (realtimeTxSyncTimer) {
+            clearTimeout(realtimeTxSyncTimer);
+            realtimeTxSyncTimer = null;
+          }
           if (realtimeChannel) {
             supabaseClient.removeChannel(realtimeChannel);
             realtimeChannel = null;
@@ -3428,11 +3632,11 @@ notify pgrst, 'reload schema';`;
                   <div class="pt-1">
                     <button
                       type="button"
-                      data-action="add"
+                      data-action="spend"
                       data-pot-id="${escapeHtml(pot.id)}"
                       class="w-full min-h-[44px] px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/40 hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-[0.98] text-sm font-semibold text-slate-900 dark:text-slate-100 transition-all inline-flex items-center justify-center gap-1.5 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-slate-100"
                     >
-                      <span>+ Add</span>
+                      <span>- Spend</span>
                     </button>
                   </div>
                 </article>
@@ -4264,6 +4468,8 @@ notify pgrst, 'reload schema';`;
           transactionsCount.textContent = count === 1 ? '1 entry' : `${count} entries`;
 
           if (count === 0) {
+            transactionsList.innerHTML = '';
+            transactionsMoreWrap.classList.add('hidden');
             transactionsEmpty.classList.remove('hidden');
             transactionsListWrap.classList.add('hidden');
             if (historyPotId) renderPotHistoryModal();
@@ -4670,28 +4876,211 @@ notify pgrst, 'reload schema';`;
               `;
             })
             .join('');
+
+          renderReportsSearch();
+        }
+
+        function formatSearchTxDate(isoString) {
+          const d = new Date(isoString);
+          if (Number.isNaN(d.getTime())) return '';
+          const includeYear = d.getFullYear() !== new Date().getFullYear();
+          return new Intl.DateTimeFormat('en-GB', {
+            day: 'numeric',
+            month: 'short',
+            ...(includeYear ? { year: 'numeric' } : {}),
+            hour: '2-digit',
+            minute: '2-digit',
+          }).format(d);
+        }
+
+        function renderReportsSearch() {
+          if (!reportsSearchList || !reportsSearchEmpty) return;
+
+          const textQuery = String(reportsSearchText ? reportsSearchText.value : '')
+            .trim()
+            .toLowerCase();
+          const amountOp = reportsSearchAmountOp ? reportsSearchAmountOp.value : 'any';
+          const rawAmount = reportsSearchAmountVal ? reportsSearchAmountVal.value.trim() : '';
+          const parsedAmount = rawAmount !== '' ? Number(rawAmount) : NaN;
+          const hasAmountFilter =
+            (amountOp === 'above' || amountOp === 'below') &&
+            Number.isFinite(parsedAmount) &&
+            parsedAmount >= 0;
+          const hasAnyFilter = textQuery.length > 0 || hasAmountFilter;
+
+          if (reportsSearchClearBtn) {
+            reportsSearchClearBtn.classList.toggle('hidden', !hasAnyFilter && amountOp === 'any' && rawAmount === '');
+          }
+
+          if (!hasAnyFilter) {
+            reportsSearchList.innerHTML = '';
+            reportsSearchList.classList.add('hidden');
+            reportsSearchEmpty.classList.remove('hidden');
+            if (reportsSearchEmptyTitle) {
+              reportsSearchEmptyTitle.textContent = 'Search your transactions';
+            }
+            if (reportsSearchEmptyDesc) {
+              if (amountOp !== 'any' && rawAmount === '') {
+                reportsSearchEmptyDesc.textContent = 'Enter a numeric amount or type a partial description to view matching transactions.';
+              } else {
+                reportsSearchEmptyDesc.textContent = `Enter a partial description or choose an amount above or below a value to search across ${transactions.length} recorded ${transactions.length === 1 ? 'transaction' : 'transactions'}.`;
+              }
+            }
+            if (reportsSearchSummary) {
+              reportsSearchSummary.textContent =
+                transactions.length === 1 ? '1 total transaction' : `${transactions.length} total transactions`;
+            }
+            return;
+          }
+
+          const matches = transactions.filter((tx) => {
+            if (textQuery) {
+              const titleText = tx.note
+                ? String(tx.note)
+                : tx.type === 'add'
+                  ? 'Added funds'
+                  : 'Spent';
+              if (!titleText.toLowerCase().includes(textQuery)) return false;
+            }
+            if (hasAmountFilter) {
+              const txAmt = Number(tx.amount) || 0;
+              if (amountOp === 'above' && !(txAmt > parsedAmount)) return false;
+              if (amountOp === 'below' && !(txAmt < parsedAmount)) return false;
+            }
+            return true;
+          });
+
+          const totalSpendMatched = roundMoney(
+            matches.filter((t) => t.type !== 'add').reduce((s, t) => s + (Number(t.amount) || 0), 0)
+          );
+          const totalAddMatched = roundMoney(
+            matches.filter((t) => t.type === 'add').reduce((s, t) => s + (Number(t.amount) || 0), 0)
+          );
+
+          if (reportsSearchSummary) {
+            const parts = [matches.length === 1 ? '1 match' : `${matches.length} matches`];
+            if (totalSpendMatched > 0) parts.push(`-${formatCurrency(totalSpendMatched)} spent`);
+            if (totalAddMatched > 0) parts.push(`+${formatCurrency(totalAddMatched)} added`);
+            reportsSearchSummary.textContent = parts.join(' · ');
+          }
+
+          if (matches.length === 0) {
+            reportsSearchList.innerHTML = '';
+            reportsSearchList.classList.add('hidden');
+            reportsSearchEmpty.classList.remove('hidden');
+            if (reportsSearchEmptyTitle) {
+              reportsSearchEmptyTitle.textContent = 'No matching transactions';
+            }
+            if (reportsSearchEmptyDesc) {
+              reportsSearchEmptyDesc.textContent = 'Try a different description keyword or adjust your amount threshold.';
+            }
+            return;
+          }
+
+          reportsSearchEmpty.classList.add('hidden');
+          reportsSearchList.classList.remove('hidden');
+          reportsSearchList.innerHTML = matches
+            .map((tx) => {
+              const isAdd = tx.type === 'add';
+              const sign = isAdd ? '+' : '-';
+              const title = tx.note ? escapeHtml(tx.note) : isAdd ? 'Added funds' : 'Spent';
+              const autoBadge = tx.is_auto
+                ? '<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200/70 dark:border-indigo-800/70 text-[10px] font-semibold uppercase tracking-wide shrink-0" title="Automatic monthly deduction"><i data-lucide="repeat" class="w-2.5 h-2.5"></i>Auto</span>'
+                : '';
+              const dateLabel = formatSearchTxDate(tx.created_at);
+              const balAfter =
+                tx.balance_after !== null && tx.balance_after !== undefined
+                  ? `Bal ${formatCurrency(tx.balance_after)}`
+                  : '';
+
+              return `
+                <li
+                  data-tx-id="${escapeHtml(tx.id)}"
+                  class="min-h-[60px] px-4 sm:px-5 py-3.5 flex items-center justify-between gap-3 cursor-pointer hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
+                >
+                  <div class="flex items-center gap-3 min-w-0">
+                    <div
+                      class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-lg shrink-0 select-none"
+                      aria-hidden="true"
+                    >
+                      ${escapeHtml(tx.pot_emoji || '💰')}
+                    </div>
+                    <div class="min-w-0">
+                      <div class="flex items-center gap-1.5 min-w-0">
+                        <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">${title}</p>
+                        ${autoBadge}
+                      </div>
+                      <p class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5 truncate mt-0.5">
+                        <span class="truncate">${escapeHtml(tx.pot_name || 'Pot')}</span>
+                        ${
+                          dateLabel
+                            ? `<span aria-hidden="true">·</span><span class="shrink-0">${escapeHtml(dateLabel)}</span>`
+                            : ''
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2 shrink-0">
+                    <div class="text-right">
+                      <p
+                        class="text-sm font-semibold font-mono tabular-nums ${
+                          isAdd ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-900 dark:text-slate-100'
+                        }"
+                      >
+                        ${sign}${formatCurrency(tx.amount)}
+                      </p>
+                      ${
+                        balAfter
+                          ? `<p class="text-xs text-slate-400 dark:text-slate-500 font-mono tabular-nums mt-0.5">${balAfter}</p>`
+                          : ''
+                      }
+                    </div>
+                    <button
+                      type="button"
+                      data-action="edit-tx"
+                      data-tx-id="${escapeHtml(tx.id)}"
+                      aria-label="Edit transaction"
+                      class="w-9 h-9 -mr-1.5 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-500 dark:hover:text-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
+                    >
+                      <i data-lucide="pencil" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </li>
+              `;
+            })
+            .join('');
+          refreshIcons();
         }
 
         function setReportsSubTab(subTab) {
-          reportsSubTab = subTab === 'yearly' ? 'yearly' : 'monthly';
+          reportsSubTab =
+            subTab === 'yearly' ? 'yearly' : subTab === 'search' ? 'search' : 'monthly';
           const isMonthly = reportsSubTab === 'monthly';
+          const isYearly = reportsSubTab === 'yearly';
+          const isSearch = reportsSubTab === 'search';
 
           if (reportsPanelMonthly) reportsPanelMonthly.classList.toggle('hidden', !isMonthly);
-          if (reportsPanelYearly) reportsPanelYearly.classList.toggle('hidden', isMonthly);
+          if (reportsPanelYearly) reportsPanelYearly.classList.toggle('hidden', !isYearly);
+          if (reportsPanelSearch) reportsPanelSearch.classList.toggle('hidden', !isSearch);
 
           const activeCls =
-            'min-h-[44px] px-4 py-2 text-sm font-semibold rounded-xl bg-white text-slate-900 dark:bg-[#131A26] dark:text-slate-100 shadow-sm transition-colors whitespace-nowrap';
+            'min-h-[44px] px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl bg-white text-slate-900 dark:bg-[#131A26] dark:text-slate-100 shadow-sm transition-colors whitespace-nowrap';
           const inactiveCls =
-            'min-h-[44px] px-4 py-2 text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors whitespace-nowrap';
+            'min-h-[44px] px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors whitespace-nowrap';
 
           if (reportsTabMonthly) {
             reportsTabMonthly.setAttribute('aria-selected', isMonthly ? 'true' : 'false');
             reportsTabMonthly.className = isMonthly ? activeCls : inactiveCls;
           }
           if (reportsTabYearly) {
-            reportsTabYearly.setAttribute('aria-selected', isMonthly ? 'false' : 'true');
-            reportsTabYearly.className = isMonthly ? inactiveCls : activeCls;
+            reportsTabYearly.setAttribute('aria-selected', isYearly ? 'true' : 'false');
+            reportsTabYearly.className = isYearly ? activeCls : inactiveCls;
           }
+          if (reportsTabSearch) {
+            reportsTabSearch.setAttribute('aria-selected', isSearch ? 'true' : 'false');
+            reportsTabSearch.className = isSearch ? activeCls : inactiveCls;
+          }
+          if (isSearch) renderReportsSearch();
         }
 
         if (reportsTabMonthly) {
@@ -4699,6 +5088,44 @@ notify pgrst, 'reload schema';`;
         }
         if (reportsTabYearly) {
           reportsTabYearly.addEventListener('click', () => setReportsSubTab('yearly'));
+        }
+        if (reportsTabSearch) {
+          reportsTabSearch.addEventListener('click', () => setReportsSubTab('search'));
+        }
+        if (reportsSearchText) {
+          reportsSearchText.addEventListener('input', renderReportsSearch);
+        }
+        if (reportsSearchAmountOp) {
+          reportsSearchAmountOp.addEventListener('change', () => {
+            if (
+              (reportsSearchAmountOp.value === 'above' || reportsSearchAmountOp.value === 'below') &&
+              reportsSearchAmountVal &&
+              reportsSearchAmountVal.value === ''
+            ) {
+              reportsSearchAmountVal.focus();
+            }
+            renderReportsSearch();
+          });
+        }
+        if (reportsSearchAmountVal) {
+          reportsSearchAmountVal.addEventListener('input', () => {
+            if (
+              reportsSearchAmountVal.value.trim() !== '' &&
+              reportsSearchAmountOp &&
+              reportsSearchAmountOp.value === 'any'
+            ) {
+              reportsSearchAmountOp.value = 'above';
+            }
+            renderReportsSearch();
+          });
+        }
+        if (reportsSearchClearBtn) {
+          reportsSearchClearBtn.addEventListener('click', () => {
+            if (reportsSearchText) reportsSearchText.value = '';
+            if (reportsSearchAmountOp) reportsSearchAmountOp.value = 'any';
+            if (reportsSearchAmountVal) reportsSearchAmountVal.value = '';
+            renderReportsSearch();
+          });
         }
 
         reportsPrevMonthBtn.addEventListener('click', () => {
@@ -4943,10 +5370,10 @@ notify pgrst, 'reload schema';`;
             renderPotHistoryModal();
           }
         });
-        historyAddBtn.addEventListener('click', () => {
+        historySpendBtn.addEventListener('click', () => {
           const pot = pots.find((p) => String(p.id) === String(historyPotId));
           closePotHistoryModal();
-          if (pot) openTxModal(pot, 'add');
+          if (pot) openTxModal(pot);
         });
 
         // Edit / Delete History Transactions
@@ -4959,21 +5386,6 @@ notify pgrst, 'reload schema';`;
           const targetName = String(tx.pot_name || '').trim().toLowerCase();
           if (!targetName) return null;
           return pots.find((p) => p.name.trim().toLowerCase() === targetName) || null;
-        }
-
-        function setEditTxMode(mode) {
-          editTxMode = mode;
-          if (mode === 'spend') {
-            editTxModeSpendBtn.className =
-              'min-h-[44px] px-3 py-2 text-sm font-semibold rounded-lg bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100 shadow-sm transition-colors';
-            editTxModeAddBtn.className =
-              'min-h-[44px] px-3 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors';
-          } else {
-            editTxModeAddBtn.className =
-              'min-h-[44px] px-3 py-2 text-sm font-semibold rounded-lg bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100 shadow-sm transition-colors';
-            editTxModeSpendBtn.className =
-              'min-h-[44px] px-3 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors';
-          }
         }
 
         function formatIsoToDateInput(isoString) {
@@ -5021,8 +5433,11 @@ notify pgrst, 'reload schema';`;
           editTxPotSelect.innerHTML = potOptions.join('');
           editTxPotSelect.value = matchedPot ? String(matchedPot.id) : '__unlinked__';
 
-          setEditTxMode(tx.type === 'add' ? 'add' : 'spend');
-          editTxAmountInput.value = Number(tx.amount || 0).toFixed(2);
+          const signedDisplay =
+            tx.type === 'add'
+              ? -Math.abs(Number(tx.amount || 0))
+              : Math.abs(Number(tx.amount || 0));
+          editTxAmountInput.value = signedDisplay.toFixed(2);
           editTxDateInput.value = formatIsoToDateInput(tx.created_at);
           editTxNoteInput.value = tx.note || '';
 
@@ -5042,8 +5457,6 @@ notify pgrst, 'reload schema';`;
         editTxModal.addEventListener('click', (e) => {
           if (e.target === editTxModal) closeEditTxModal();
         });
-        editTxModeSpendBtn.addEventListener('click', () => setEditTxMode('spend'));
-        editTxModeAddBtn.addEventListener('click', () => setEditTxMode('add'));
 
         editTxForm.addEventListener('submit', async (e) => {
           e.preventDefault();
@@ -5055,13 +5468,16 @@ notify pgrst, 'reload schema';`;
             return;
           }
 
-          const newAmount = roundMoney(parseFloat(editTxAmountInput.value));
-          if (!Number.isFinite(newAmount) || newAmount <= 0) {
-            editTxError.textContent = 'Enter an amount greater than £0.00.';
+          const signedSpend = roundMoney(parseFloat(editTxAmountInput.value));
+          if (!Number.isFinite(signedSpend) || signedSpend === 0) {
+            editTxError.textContent = 'Enter a non-zero amount (use a negative value to add to pot).';
             editTxError.classList.remove('hidden');
             editTxAmountInput.focus();
             return;
           }
+
+          const nextTxType = signedSpend < 0 ? 'add' : 'spend';
+          const newAmount = roundMoney(Math.abs(signedSpend));
 
           const dateVal = editTxDateInput.value.trim();
           if (!/^\d{4}-\d{2}-\d{2}$/.test(dateVal)) {
@@ -5081,7 +5497,7 @@ notify pgrst, 'reload schema';`;
               : null;
 
           const oldEffect = oldTx.type === 'add' ? Number(oldTx.amount) : -Number(oldTx.amount);
-          const newEffect = editTxMode === 'add' ? newAmount : -newAmount;
+          const newEffect = nextTxType === 'add' ? newAmount : -newAmount;
           const samePot = oldPot && newPot && String(oldPot.id) === String(newPot.id);
 
           editTxSaveBtn.disabled = true;
@@ -5128,13 +5544,14 @@ notify pgrst, 'reload schema';`;
               pot_id: newPot ? newPot.id : oldTx.pot_id,
               pot_name: newPot ? newPot.name : oldTx.pot_name,
               pot_emoji: newPot ? newPot.emoji : oldTx.pot_emoji,
-              type: editTxMode,
+              type: nextTxType,
               amount: newAmount,
               balance_after: updatedBalanceAfter,
               note: newNote,
               created_at: newCreatedAt,
             });
 
+            lastLocalTxWriteAt = Date.now();
             if (storageMode !== 'local' && hasSupabaseTxTable && isUuid(oldTx.id)) {
               const { error } = await supabaseClient
                 .from('transactions')
@@ -5201,6 +5618,7 @@ notify pgrst, 'reload schema';`;
               if (storageMode === 'local') saveLocalPots(pots);
             }
 
+            lastLocalTxWriteAt = Date.now();
             if (storageMode !== 'local' && hasSupabaseTxTable && isUuid(tx.id)) {
               const { error } = await supabaseClient
                 .from('transactions')
@@ -5240,6 +5658,9 @@ notify pgrst, 'reload schema';`;
 
         transactionsList.addEventListener('click', handleTxListClick);
         historyTxList.addEventListener('click', handleTxListClick);
+        if (reportsSearchList) {
+          reportsSearchList.addEventListener('click', handleTxListClick);
+        }
 
         // Delegate clicks on Pot Cards
         potsGrid.addEventListener('click', (e) => {
@@ -5251,9 +5672,7 @@ notify pgrst, 'reload schema';`;
             if (!pot) return;
 
             if (action === 'spend') {
-              openTxModal(pot, 'spend');
-            } else if (action === 'add') {
-              openTxModal(pot, 'add');
+              openTxModal(pot);
             } else if (action === 'edit') {
               openPotModal(pot);
             }
@@ -5268,41 +5687,19 @@ notify pgrst, 'reload schema';`;
           }
         });
 
-        // Quick Transaction Modal (- Spend / + Add)
-        function setTxMode(mode) {
-          activeTxMode = mode;
-          txError.classList.add('hidden');
-          const pot = pots.find((p) => String(p.id) === String(activeTxPotId));
-
-          if (mode === 'spend') {
-            txModeSpendBtn.className =
-              'min-h-[44px] px-3 py-2 text-sm font-semibold rounded-lg bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100 shadow-sm transition-colors';
-            txModeAddBtn.className =
-              'min-h-[44px] px-3 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors';
-            txModalTitle.textContent = pot ? `Spend from ${pot.name}` : 'Spend from Pot';
-            txSubmitLabel.textContent = 'Confirm Spend';
-          } else {
-            txModeAddBtn.className =
-              'min-h-[44px] px-3 py-2 text-sm font-semibold rounded-lg bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100 shadow-sm transition-colors';
-            txModeSpendBtn.className =
-              'min-h-[44px] px-3 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors';
-            txModalTitle.textContent = pot ? `Add to ${pot.name}` : 'Add to Pot';
-            txSubmitLabel.textContent = 'Confirm Deposit';
-          }
-          updateProjectedBalance();
-        }
-
+        // Quick Transaction Modal (Spend, with negative values adding to pot)
         function updateProjectedBalance() {
           const pot = pots.find((p) => String(p.id) === String(activeTxPotId));
           if (!pot) return;
           const raw = parseFloat(txAmountInput.value);
-          const amount = Number.isFinite(raw) && raw > 0 ? roundMoney(raw) : 0;
-          const projected =
-            activeTxMode === 'spend'
-              ? roundMoney(pot.balance - amount)
-              : roundMoney(pot.balance + amount);
+          const signedSpend = Number.isFinite(raw) ? roundMoney(raw) : 0;
+          const projected = roundMoney(pot.balance - signedSpend);
 
-          if (projected < 0) {
+          if (signedSpend < 0) {
+            txProjectedBalance.textContent = `${formatCurrency(projected)} (+${formatCurrency(Math.abs(signedSpend))} to pot)`;
+            txProjectedBalance.className =
+              'font-mono tabular-nums font-semibold text-emerald-700 dark:text-emerald-400';
+          } else if (projected < 0) {
             txProjectedBalance.textContent = `${formatCurrency(projected)} (deficit)`;
             txProjectedBalance.className =
               'font-mono tabular-nums font-semibold text-red-600 dark:text-red-400';
@@ -5313,14 +5710,16 @@ notify pgrst, 'reload schema';`;
           }
         }
 
-        function openTxModal(pot, mode = 'add') {
+        function openTxModal(pot) {
           activeTxPotId = pot.id;
           txPotEmoji.textContent = pot.emoji || '💰';
+          txModalTitle.textContent = pot ? `Spend from ${pot.name}` : 'Spend from Pot';
           txPotCurrent.textContent = `Current balance: ${formatCurrency(pot.balance)}`;
           txAmountInput.value = '';
           txNoteInput.value = '';
           txError.classList.add('hidden');
-          setTxMode(mode);
+          txSubmitLabel.textContent = 'Confirm spend';
+          updateProjectedBalance();
           txModal.classList.remove('hidden');
           refreshIcons();
           setTimeout(() => txAmountInput.focus(), 40);
@@ -5334,8 +5733,6 @@ notify pgrst, 'reload schema';`;
           txError.classList.add('hidden');
         }
 
-        txModeSpendBtn.addEventListener('click', () => setTxMode('spend'));
-        txModeAddBtn.addEventListener('click', () => setTxMode('add'));
         txCloseBtn.addEventListener('click', closeTxModal);
         txCancelBtn.addEventListener('click', closeTxModal);
         txModal.addEventListener('click', (e) => {
@@ -5363,23 +5760,24 @@ notify pgrst, 'reload schema';`;
           const pot = pots.find((p) => String(p.id) === String(activeTxPotId));
           if (!pot) return;
 
-          const amount = roundMoney(parseFloat(txAmountInput.value));
-          if (!Number.isFinite(amount) || amount <= 0) {
-            txError.textContent = 'Enter an amount greater than £0.00.';
+          const signedSpend = roundMoney(parseFloat(txAmountInput.value));
+          if (!Number.isFinite(signedSpend) || signedSpend === 0) {
+            txError.textContent = 'Enter a non-zero amount (use a negative value to add to pot).';
             txError.classList.remove('hidden');
             txAmountInput.focus();
             return;
           }
 
-          const newBalance =
-            activeTxMode === 'spend'
-              ? roundMoney(pot.balance - amount)
-              : roundMoney(pot.balance + amount);
+          const isAddToPot = signedSpend < 0;
+          const txType = isAddToPot ? 'add' : 'spend';
+          const txAmount = roundMoney(Math.abs(signedSpend));
+          const newBalance = roundMoney(pot.balance - signedSpend);
 
           txSubmitBtn.disabled = true;
           txSubmitLabel.textContent = 'Updating...';
 
           try {
+            lastLocalTxWriteAt = Date.now();
             const updated = await updatePotFields(pot.id, { balance: newBalance });
             const idx = pots.findIndex((p) => String(p.id) === String(updated.id));
             if (idx !== -1) pots[idx] = updated;
@@ -5390,24 +5788,25 @@ notify pgrst, 'reload schema';`;
               pot_id: updated.id,
               pot_name: updated.name,
               pot_emoji: updated.emoji,
-              type: activeTxMode,
-              amount: amount,
+              type: txType,
+              amount: txAmount,
               balance_after: updated.balance,
               note: txNoteInput.value.trim(),
               created_at: new Date().toISOString(),
             });
 
-            const actionWord = activeTxMode === 'spend' ? 'Spent' : 'Added';
-            const prep = activeTxMode === 'spend' ? 'from' : 'to';
-            showToast(`${actionWord} ${formatCurrency(amount)} ${prep} ${pot.name}`);
+            if (isAddToPot) {
+              showToast(`Added ${formatCurrency(txAmount)} to ${pot.name}`);
+            } else {
+              showToast(`Spent ${formatCurrency(txAmount)} from ${pot.name}`);
+            }
             closeTxModal();
           } catch (err) {
             txError.textContent = err.message || 'Could not update pot balance.';
             txError.classList.remove('hidden');
           } finally {
             txSubmitBtn.disabled = false;
-            txSubmitLabel.textContent =
-              activeTxMode === 'spend' ? 'Confirm Spend' : 'Confirm Deposit';
+            txSubmitLabel.textContent = 'Confirm spend';
           }
         });
 
@@ -6360,9 +6759,13 @@ notify pgrst, 'reload schema';`;
             lastRolloverMonthChecked = null;
             lastAutoDeductDateChecked = null;
             lastSyncedAt = null;
+            lastLocalTxWriteAt = 0;
             activeSyncPromise = null;
             potsHeaderMonthKey = null;
             reportsMonthKey = null;
+            if (reportsSearchText) reportsSearchText.value = '';
+            if (reportsSearchAmountOp) reportsSearchAmountOp.value = 'any';
+            if (reportsSearchAmountVal) reportsSearchAmountVal.value = '';
             setReportsSubTab('monthly');
             activeTab = 'pots';
             if (syncConfirmationText) syncConfirmationText.classList.add('hidden');
@@ -6400,6 +6803,13 @@ notify pgrst, 'reload schema';`;
         document.addEventListener('visibilitychange', () => {
           if (document.visibilityState === 'visible') {
             checkMonthlyRolloverOnResume();
+            if (
+              currentUser &&
+              !activeSyncPromise &&
+              (!lastSyncedAt || Date.now() - lastSyncedAt.getTime() > 15000)
+            ) {
+              fetchPots(false, false);
+            }
           }
         });
         window.addEventListener('focus', checkMonthlyRolloverOnResume);
